@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserAuthController;
+use App\Http\Controllers\CatalogController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,8 +21,16 @@ Route::group([
 
 ], function ($router) {
     Route::post('/authenticate', [UserAuthController::class, 'authenticate']);
-    Route::post('/register', [UserAuthController::class, 'register']);
-    Route::post('/logout', [UserAuthController::class, 'logout']);
-    Route::post('/refresh', [UserAuthController::class, 'refresh']);
     Route::get('/signup', [UserAuthController::class, 'signup']);
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'catalog'
+
+], function ($router) {
+    Route::get('/', [CatalogController::class, 'show']);
+});
+
+
+

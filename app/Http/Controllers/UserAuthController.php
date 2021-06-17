@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Events\UserHasCreated;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\CatalogController;
 
 class UserAuthController extends Controller
 {
@@ -56,16 +57,32 @@ class UserAuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        /**
+         * Obtener un valor random de la columna Supplier
+         */
+        $catalog = New CatalogController();
+        $supplierRandom = $catalog->listUniqueSuppliers();
+
+        /**
+         * Obtener los valores del Request y armar el Objeto para guardar el USER
+         */
         $data = $request->all();
         $user = new User;
         $user->email = $data['email'];
         $user->name = $data['name'];
         $user->password = Hash::make('password');
+        $user->supplier = $supplierRandom;
         $user->save();
 
+        /**
+         * El usuario creado validarlo con AUTH para con ello obtener el Token
+         */
         $credentials = ["email"=>$data['email'], "password"=>'password'];
         $token = Auth::attempt($credentials);
 
+        /**
+         * Si el usuario fue creado exitosamente debemos obtener el token
+         */
         if ($token)
         {
             Log::debug('Validación exitosa creando evento para enviar correo');
