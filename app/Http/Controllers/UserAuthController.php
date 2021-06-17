@@ -24,7 +24,7 @@ class UserAuthController extends Controller
         Log::debug('UserAuthController -> authenticate',  $request->all());
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required | email',
+            'email' => 'required | email | exists:users',
             'password' => 'required | string | min:6',
         ]);
 
