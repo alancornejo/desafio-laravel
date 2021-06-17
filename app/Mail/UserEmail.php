@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class UserEmail extends Mailable
 {
@@ -17,6 +18,7 @@ class UserEmail extends Mailable
 
     public function __construct($data)
     {
+        Log::debug('Constructor UserEmail', $data);
         $this->name = $data['name'];
         $this->email = $data['email'];
     }
@@ -26,4 +28,5 @@ class UserEmail extends Mailable
         return $this->markdown('emails.email_user')
             ->from('alancix@gmail.com', 'Usuario Laravel')
             ->subject('Creación de cuenta ');
+    }
 }
